@@ -1,0 +1,74 @@
+# Docker Compose configuration for Student Notes Platform
+# Includes FastAPI backend, Prometheus metrics, and Grafana dashboards
+#
+# Usage:
+#   docker compose up -d          # Start all services
+#   docker compose down            # Stop all services
+#   docker compose logs -f app     # View app logs
+#
+# Access:
+#   - FastAPI App: http://localhost:8000
+#   - Prometheus:  http://localhost:9090
+#   - Grafana:     http://localhost:3000 (admin/admin)
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    # Alternative if no Dockerfile exists, uncomment below and comment build section:
+    # image: python:3.11-slim
+    # working_dir: /app
+    # volumes:
+    #   - ./app:/app
+    # command: >
+    #   sh -c "pip install fastapi uvicorn prometheus-client &&
+    #          uvicorn app.main:app --host 0.0.0.0 --port 8000"
+    ports:
+      - "8000:8000"  # FastAPI API
+      - "8001:8001"  # Prometheus metrics
+    environment:
+      - DEBUG=false
+      - PYTHONUNBUFFERED=1
+    networks:
+      - monitoring-net
+    restart: unless-stopped
+    # Uncomment if you want app to wait for Prometheus/Grafana:
+    # depends_on:
+    #   - prometheus
+    #   - grafana
+
+  prometheus:
+    image: prom/prometheus:latest
+    volumes:
+      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+    command:
+      - "--config.file=/etc/prometheus/prometheus.yml"
+      - "--storage.tsdb.retention.time=30d"
+    ports:
+      - "9090:9090"
+    networks:
+      - monitoring-net
+    restart: unless-stopped
+
+  grafana:
+    image: grafana/grafana:latest
+    ports:
+      - "3000:3000"
+    volumes:
+      - grafana-data:/var/lib/grafana
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+      - GF_SECURITY_ADMIN_USER=admin
+    networks:
+      - monitoring-net
+    restart: unless-stopped
+
+networks:
+  monitoring-net:
+    driver: bridge
+
+volumes:
+  grafana-data:
+    driver: local
+

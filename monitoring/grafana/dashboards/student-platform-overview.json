@@ -1,0 +1,126 @@
+{
+    "title": "Student Notes Platform – Live Monitoring",
+    "uid": "student-notes-overview",
+    "version": 42,
+    "tags": ["student-notes", "monitoring", "demo"],
+    "style": "dark",
+    "timezone": "",
+    "editable": true,
+    "time": { "from": "now-6h", "to": "now" },
+    "refresh": "10s",
+    "panels": [
+      {
+        "title": "Total Files Uploaded (Last 24h)",
+        "type": "stat",
+        "gridPos": { "h": 8, "w": 6, "x": 0, "y": 0 },
+        "targets": [{ "refId": "A", "expr": "sum(increase(files_uploaded_total[24h]))" }],
+        "fieldConfig": {
+          "defaults": { "unit": "short", "color": { "mode": "thresholds" } }
+        },
+        "options": { "reduceOptions": { "calcs": ["lastNotNull"] } },
+        "overrides": [],
+        "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
+        "value": 1247
+      },
+      {
+        "title": "Upload Rate per Minute (by File Type)",
+        "type": "timeseries",
+        "gridPos": { "h": 8, "w": 6, "x": 6, "y": 0 },
+        "targets": [
+          { "expr": "rate(files_uploaded_total[1m])", "legendFormat": "{{file_type}}" }
+        ],
+        "fieldConfig": { "defaults": { "unit": "files/s" } },
+        "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
+        "legend": { "displayMode": "list", "placement": "bottom" }
+      },
+      {
+        "title": "Uploads by File Type (Last 6h)",
+        "type": "piechart",
+        "gridPos": { "h": 8, "w": 6, "x": 12, "y": 0 },
+        "targets": [
+          { "expr": "sum by (file_type) (increase(files_uploaded_total[6h]))", "legendFormat": "{{file_type}}" }
+        ],
+        "options": { "pieType": "pie", "displayLabels": ["percent"] },
+        "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
+        "values": { "pdf": 682, "pptx": 398, "docx": 145, "jpg": 22 }
+      },
+      {
+        "title": "Top 10 Features Used (Last 6h)",
+        "type": "bargauge",
+        "gridPos": { "h": 8, "w": 6, "x": 18, "y": 0 },
+        "targets": [
+          { "expr": "topk(10, sum by (feature) (increase(feature_requested_total[6h])))", "legendFormat": "{{feature}}" }
+        ],
+        "options": { "orientation": "horizontal", "displayMode": "gradient" },
+        "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
+        "values": {
+          "ppt_to_video": 892,
+          "quiz": 743,
+          "mindmap": 521,
+          "summary": 398,
+          "translation": 267,
+          "flashcards": 189,
+          "notes_cleanup": 145,
+          "audio_notes": 98,
+          "handwriting_ocr": 67,
+          "exam_simulator": 34
+        }
+      },
+      {
+        "title": "Feature Duration Heatmap (All Features)",
+        "type": "heatmap",
+        "gridPos": { "h": 8, "w": 12, "x": 0, "y": 8 },
+        "targets": [
+          { "expr": "sum(rate(feature_duration_seconds_bucket[5m])) by (le, feature)", "format": "heatmap" }
+        ],
+        "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
+        "yAxis": { "unit": "s" }
+      },
+      {
+        "title": "Feature Latency: p50 / p95 / p99",
+        "type": "timeseries",
+        "gridPos": { "h": 8, "w": 12, "x": 12, "y": 8 },
+        "targets": [
+          { "expr": "histogram_quantile(0.50, sum(rate(feature_duration_seconds_bucket[5m])) by (le, feature))", "legendFormat": "p50 - {{feature}}" },
+          { "expr": "histogram_quantile(0.95, sum(rate(feature_duration_seconds_bucket[5m])) by (le, feature))", "legendFormat": "p95 - {{feature}}" },
+          { "expr": "histogram_quantile(0.99, sum(rate(feature_duration_seconds_bucket[5m])) by (le, feature))", "legendFormat": "p99 - {{feature}}" }
+        ],
+        "fieldConfig": { "defaults": { "unit": "s" } },
+        "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" }
+      },
+      {
+        "title": "Currently Active Background Jobs",
+        "type": "gauge",
+        "gridPos": { "h": 8, "w": 6, "x": 0, "y": 16 },
+        "targets": [{ "expr": "sum(active_jobs)" }],
+        "options": { "orientation": "auto" },
+        "fieldConfig": {
+          "defaults": {
+            "min": 0,
+            "max": 50,
+            "thresholds": {
+              "steps": [
+                { "color": "green", "value": null },
+                { "color": "yellow", "value": 20 },
+                { "color": "red", "value": 40 }
+              ]
+            }
+          }
+        },
+        "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
+        "value": 12
+      },
+      {
+        "title": "Active Jobs by Type (Time Series)",
+        "type": "timeseries",
+        "gridPos": { "h": 8, "w": 18, "x": 6, "y": 16 },
+        "targets": [
+          { "expr": "sum by (job_type) (active_jobs)", "legendFormat": "{{job_type}}" }
+        ],
+        "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" }
+      }
+    ],
+    "schemaVersion": 38,
+    "annotations": { "list": [] },
+    "links": []
+  }
