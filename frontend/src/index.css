@@ -1,6 +1,20 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
+
+@theme {
+  --color-primary: #13294B;
+  --color-primary-light: #1a3a6b;
+  --color-primary-dark: #0d1f3a;
+  --color-gold: #D4B44C;
+  --color-gold-light: #C59F3E;
+  --color-gold-dark: #b8942a;
+  --color-cream: #F9F7F2;
+  --color-cream-light: #ffffff;
+  --color-cream-dark: #f5f3ed;
+  --color-navy: #13294B;
+  --color-navy-light: #1a3a6b;
+  --color-navy-dark: #0d1f3a;
+  --font-family-sans: 'Inter', 'Poppins', sans-serif;
+}
 
 @layer base {
   * {
