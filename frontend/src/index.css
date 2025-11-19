@@ -1,0 +1,129 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  * {
+    @apply transition-colors duration-300;
+  }
+  
+  body {
+    @apply bg-cream text-gray-900 dark:bg-navy dark:text-white;
+  }
+}
+
+@layer components {
+  .btn-primary {
+    @apply bg-gold hover:bg-gold-dark text-navy font-semibold py-3 px-6 rounded-lg shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all duration-300;
+  }
+  
+  .btn-secondary {
+    @apply bg-white border-2 border-navy text-navy hover:bg-navy hover:text-white font-semibold py-3 px-6 rounded-lg transition-all duration-300;
+  }
+  
+  .btn-outline {
+    @apply bg-transparent border-2 border-gold text-gold hover:bg-gold hover:text-navy font-semibold py-3 px-6 rounded-lg transition-all duration-300;
+  }
+  
+  .glass-card {
+    @apply bg-white/90 dark:bg-navy/90 backdrop-blur-lg rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-200 dark:border-gray-700;
+  }
+  
+  .input-field {
+    @apply w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-navy/50 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-gold focus:border-transparent transition-all duration-300;
+  }
+}
+
+@layer utilities {
+  @keyframes float {
+    0%, 100% {
+      transform: translateY(0) rotate(-2deg);
+    }
+    50% {
+      transform: translateY(-15px) rotate(2deg);
+    }
+  }
+  
+  @keyframes float-delayed {
+    0%, 100% {
+      transform: translateY(0) rotate(2deg);
+    }
+    50% {
+      transform: translateY(-15px) rotate(-2deg);
+    }
+  }
+  
+  @keyframes slideIn {
+    0% {
+      transform: translateX(-20px);
+      opacity: 0;
+    }
+    100% {
+      transform: translateX(0);
+      opacity: 1;
+    }
+  }
+  
+  @keyframes pulse-glow {
+    0%, 100% {
+      box-shadow: 0 0 20px rgba(212, 180, 76, 0.4);
+    }
+    50% {
+      box-shadow: 0 0 40px rgba(212, 180, 76, 0.8);
+    }
+  }
+  
+  @keyframes rotate-slow {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+  
+  @keyframes sparkle {
+    0%, 100% {
+      opacity: 0;
+      transform: scale(0);
+    }
+    50% {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+  
+  @keyframes text-flow {
+    0% {
+      transform: translateY(0);
+    }
+    100% {
+      transform: translateY(-100%);
+    }
+  }
+  
+  .animate-float {
+    animation: float 6s ease-in-out infinite;
+  }
+  
+  .animate-float-delayed {
+    animation: float-delayed 6s ease-in-out infinite 1s;
+  }
+  
+  .animate-slide-in {
+    animation: slideIn 0.8s ease-out;
+  }
+  
+  .animate-pulse-glow {
+    animation: pulse-glow 2s ease-in-out infinite;
+  }
+  
+  .animate-rotate-slow {
+    animation: rotate-slow 20s linear infinite;
+  }
+  
+  .animate-sparkle {
+    animation: sparkle 2s ease-in-out infinite;
+  }
+}
+
